@@ -4,7 +4,7 @@
 [ext_resource type="Script" uid="uid://cwiikxr7vp6il" path="res://scripts/home_base.gd" id="1_oik7h"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_oik7h"]
-radius = 46.0977
+radius = 23.0
 
 [node name="home_base" type="Node2D"]
 script = ExtResource("1_oik7h")
@@ -17,7 +17,7 @@ shape = SubResource("CircleShape2D_oik7h")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 modulate = Color(0, 0, 1, 1)
-scale = Vector2(0.4, 0.4)
+scale = Vector2(0.2, 0.2)
 texture = ExtResource("1_fm3wt")
 
 [connection signal="area_entered" from="Area2D" to="." method="_on_home_base_area_entered"]

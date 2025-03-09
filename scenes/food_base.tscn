@@ -4,7 +4,7 @@
 [ext_resource type="Script" uid="uid://dccal0cd8pa7q" path="res://scripts/food_base.gd" id="1_x3pn0"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_x3pn0"]
-radius = 43.0116
+radius = 22.0
 
 [node name="food_base" type="Node2D"]
 script = ExtResource("1_x3pn0")
@@ -17,7 +17,7 @@ shape = SubResource("CircleShape2D_x3pn0")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 modulate = Color(0, 1, 0, 1)
-scale = Vector2(0.4, 0.4)
+scale = Vector2(0.2, 0.2)
 texture = ExtResource("1_6r7vd")
 
 [connection signal="area_entered" from="Area2D" to="." method="_on_food_base_area_entered"]

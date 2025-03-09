@@ -4,3 +4,5 @@
 
 [node name="interactionManager" type="Node2D"]
 script = ExtResource("1_rddhf")
+show_grid = true
+show_interaction_lines = false

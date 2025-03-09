@@ -16,5 +16,10 @@ func _process(_delta: float) -> void:
 		new_agent.global_position = get_global_mouse_position()
 		agent_manager.add_child(new_agent)
 		Manager.total_agents_live += 1
-		Manager.agents.append(new_agent)
+		
+		# adding the agent in grid : 
+		var cell_key = Manager.get_grid_cell_key(new_agent.global_position)
+		if(! Manager.agents_grid.has(cell_key)):
+			Manager.agents_grid[cell_key] = []
+		Manager.agents_grid[cell_key].append(new_agent)
 		

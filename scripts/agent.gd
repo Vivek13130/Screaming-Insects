@@ -11,14 +11,16 @@ var target_destination : String = "food"   #either "food" or "home"
 var direction : Vector2 
 var move_speed : int # random speed for each agent in the range 5 to 15
 
-
 @onready var sprite: Sprite2D = $Sprite2D
+var old_grid_cell 
 
 func _ready() -> void:
 	# setting the initials 
 	direction = Vector2(randf() , randf()).normalized() # assigning initial random direction 
 	counters = Vector2.ZERO
 	move_speed = randi_range(Manager.min_speed , Manager.max_speed) * 20
+	
+	# randomly assigning a target
 	if(randf() > 0.5):
 		target_destination = "food"
 		sprite.modulate = Manager.target_is_food_color
@@ -26,10 +28,13 @@ func _ready() -> void:
 		target_destination = "home"
 		sprite.modulate = Manager.target_is_home_color
 	
+	old_grid_cell = get_grid_cell_key(global_position)
 
 func _process(delta: float) -> void:
 	move_randomly(delta)
 	keep_agents_inside_screen() 
+	update_position_in_grid()
+	
 	Manager.max_scream_calls = max(Manager.max_scream_calls , Manager.total_screams)
 	Manager.total_screams = 0 
 
@@ -41,7 +46,7 @@ func move_randomly(delta : float) -> void :
 	counters.x += 1
 	counters.y += 1
 	
-	var angle_shift = randf_range(-0.1 , 0.1)
+	var angle_shift = randf_range(-0.1 , 0.1) / 2
 	direction = direction.rotated(angle_shift).normalized()
 
 func keep_agents_inside_screen(): # keep the agents inside the screen bounds 
@@ -52,15 +57,46 @@ func keep_agents_inside_screen(): # keep the agents inside the screen bounds
 	if position.y < 0 or position.y > Manager.screen_size.y:
 		direction.y = -direction.y
 
+func update_position_in_grid():
+	var new_grid_cell = get_grid_cell_key(global_position)
+	
+	if old_grid_cell != new_grid_cell:
+		# Remove from the old grid cell
+		if Manager.agents_grid.has(old_grid_cell):
+			Manager.agents_grid[old_grid_cell].erase(self)
+			
+			if Manager.agents_grid[old_grid_cell].is_empty():
+				Manager.agents_grid.erase(old_grid_cell)
+
+		# Add to the new grid cell
+		if not Manager.agents_grid.has(new_grid_cell):
+			Manager.agents_grid[new_grid_cell] = []
+			
+		Manager.agents_grid[new_grid_cell].push_back(self)
+
+		old_grid_cell = new_grid_cell
+
 
 func scream():
 #	send scream request to others : 
 # only call this function when any counter is updated 
-	Manager.total_screams += 1
 	
-	for agent in Manager.agents:
-		if(global_position.distance_to(agent.global_position) <= Manager.scream_distance):
-			agent.update_from_scream(counters + Vector2(Manager.scream_distance , Manager.scream_distance), global_position)
+	var current_cell = get_grid_cell_key(global_position)
+	var scream_distance = Manager.scream_distance
+	
+	for x_offset in range( -scream_distance , scream_distance + 1) : 
+		for y_offset in range( -scream_distance , scream_distance + 1 ) : 
+			var neighbour_cell = current_cell + Vector2(x_offset, y_offset)
+			
+			if Manager.agents_grid.has(neighbour_cell):
+				# iterate over all agents in this cell and send them scream request : 
+				for agent in Manager.agents_grid[neighbour_cell]:
+					agent.update_from_scream(counters + Vector2(Manager.scream_distance , Manager.scream_distance), global_position)
+
+	#for agent in Manager.agents:
+		#if(global_position.distance_to(agent.global_position) <= Manager.scream_distance):
+			#Manager.scream_queue.append([agent , counters + Vector2(Manager.scream_distance, Manager.scream_distance), global_position])
+			#agent.update_from_scream(counters + Vector2(Manager.scream_distance , Manager.scream_distance), global_position)
 
 func update_from_scream(screamer_counters : Vector2, screamer_position : Vector2):
 	#print("heard a scream")
@@ -106,6 +142,7 @@ func update_from_scream(screamer_counters : Vector2, screamer_position : Vector2
 		
 	
 	if(should_scream_again):
+		#scream()
 		call_deferred("scream")
 
 
@@ -129,3 +166,6 @@ func update_from_base(base_name : String):
 		sprite.modulate = Manager.target_is_home_color
 		direction = direction.rotated(PI) # rotating the direction by 180
 		scream()
+
+func get_grid_cell_key(position: Vector2) -> Vector2:
+	return Vector2(floor(position.x / Manager.grid_cell_size), floor(position.y / Manager.grid_cell_size))
