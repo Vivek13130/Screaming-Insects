@@ -1,0 +1,23 @@
+[gd_scene load_steps=4 format=3 uid="uid://db3jv3caod6bx"]
+
+[ext_resource type="Texture2D" uid="uid://b4ta7jj5a1p6h" path="res://assets/images-removebg-preview.png" id="1_fm3wt"]
+[ext_resource type="Script" uid="uid://cwiikxr7vp6il" path="res://scripts/home_base.gd" id="1_oik7h"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_oik7h"]
+radius = 46.0977
+
+[node name="home_base" type="Node2D"]
+script = ExtResource("1_oik7h")
+
+[node name="Area2D" type="Area2D" parent="."]
+collision_layer = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+shape = SubResource("CircleShape2D_oik7h")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+modulate = Color(0, 0, 1, 1)
+scale = Vector2(0.4, 0.4)
+texture = ExtResource("1_fm3wt")
+
+[connection signal="area_entered" from="Area2D" to="." method="_on_home_base_area_entered"]
