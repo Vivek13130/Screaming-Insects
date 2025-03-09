@@ -1,10 +1,11 @@
-[gd_scene load_steps=6 format=3 uid="uid://bjbdn6p2u6f4s"]
+[gd_scene load_steps=7 format=3 uid="uid://bjbdn6p2u6f4s"]
 
 [ext_resource type="Script" uid="uid://enfj18vcthat" path="res://scripts/main.gd" id="1_o5qli"]
 [ext_resource type="PackedScene" uid="uid://db3jv3caod6bx" path="res://scenes/home_base.tscn" id="2_jyhfs"]
 [ext_resource type="PackedScene" uid="uid://c22f2hdjdn0vu" path="res://scenes/food_base.tscn" id="3_tbgi4"]
 [ext_resource type="PackedScene" uid="uid://ckknw030p00hq" path="res://scenes/main_ui.tscn" id="4_jyhfs"]
 [ext_resource type="PackedScene" uid="uid://bufmkhcic1re5" path="res://scenes/interaction_manager.tscn" id="4_tbgi4"]
+[ext_resource type="Script" uid="uid://cbofaivykvppx" path="res://scripts/camera_2d.gd" id="6_tefeu"]
 
 [node name="main" type="Node2D"]
 script = ExtResource("1_o5qli")
@@ -28,3 +29,7 @@ position = Vector2(543, 167)
 [node name="main_ui" parent="CanvasLayer" instance=ExtResource("4_jyhfs")]
 
 [node name="interactionManager" parent="." instance=ExtResource("4_tbgi4")]
+
+[node name="Camera2D" type="Camera2D" parent="."]
+anchor_mode = 0
+script = ExtResource("6_tefeu")

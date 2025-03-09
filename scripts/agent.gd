@@ -12,7 +12,7 @@ var direction : Vector2
 var move_speed : int # random speed for each agent in the range 5 to 15
 
 @onready var sprite: Sprite2D = $Sprite2D
-var old_grid_cell 
+var old_grid_cell : Vector2i
 
 func _ready() -> void:
 	# setting the initials 
@@ -28,7 +28,7 @@ func _ready() -> void:
 		target_destination = "home"
 		sprite.modulate = Manager.target_is_home_color
 	
-	old_grid_cell = get_grid_cell_key(global_position)
+	old_grid_cell = Manager.get_grid_cell_key(global_position)
 
 func _process(delta: float) -> void:
 	move_randomly(delta)
@@ -58,15 +58,15 @@ func keep_agents_inside_screen(): # keep the agents inside the screen bounds
 		direction.y = -direction.y
 
 func update_position_in_grid():
-	var new_grid_cell = get_grid_cell_key(global_position)
+	var new_grid_cell : Vector2i = Manager.get_grid_cell_key(global_position)
 	
 	if old_grid_cell != new_grid_cell:
 		# Remove from the old grid cell
 		if Manager.agents_grid.has(old_grid_cell):
 			Manager.agents_grid[old_grid_cell].erase(self)
 			
-			if Manager.agents_grid[old_grid_cell].is_empty():
-				Manager.agents_grid.erase(old_grid_cell)
+			#if Manager.agents_grid[old_grid_cell].is_empty():
+				#Manager.agents_grid.erase(old_grid_cell)
 
 		# Add to the new grid cell
 		if not Manager.agents_grid.has(new_grid_cell):
@@ -75,18 +75,21 @@ func update_position_in_grid():
 		Manager.agents_grid[new_grid_cell].push_back(self)
 
 		old_grid_cell = new_grid_cell
+		#print("new cell position : ", new_grid_cell)
 
 
 func scream():
 #	send scream request to others : 
 # only call this function when any counter is updated 
 	
-	var current_cell = get_grid_cell_key(global_position)
+	Manager.total_screams += 1
+	
+	var current_cell = Manager.get_grid_cell_key(global_position)
 	var scream_distance = Manager.scream_distance
 	
 	for x_offset in range( -scream_distance , scream_distance + 1) : 
 		for y_offset in range( -scream_distance , scream_distance + 1 ) : 
-			var neighbour_cell = current_cell + Vector2(x_offset, y_offset)
+			var neighbour_cell = current_cell + Vector2i(x_offset, y_offset)
 			
 			if Manager.agents_grid.has(neighbour_cell):
 				# iterate over all agents in this cell and send them scream request : 
@@ -166,6 +169,3 @@ func update_from_base(base_name : String):
 		sprite.modulate = Manager.target_is_home_color
 		direction = direction.rotated(PI) # rotating the direction by 180
 		scream()
-
-func get_grid_cell_key(position: Vector2) -> Vector2:
-	return Vector2(floor(position.x / Manager.grid_cell_size), floor(position.y / Manager.grid_cell_size))

@@ -11,6 +11,10 @@ func _on_viewport_size_changed() -> void:
 
 func _process(_delta: float) -> void:
 	
+	if(Input.is_action_just_pressed("restart")):
+		get_tree().reload_current_scene()
+
+	
 	if(Input.is_action_pressed("Spawn_Agents")):
 		var new_agent = agent_scene.instantiate()
 		new_agent.global_position = get_global_mouse_position()

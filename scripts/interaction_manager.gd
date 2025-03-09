@@ -1,7 +1,5 @@
 extends Node2D
 
-@export var show_grid : bool = false 
-@export var show_interaction_lines : bool = true
 
 func _process(delta: float) -> void:
 		update_canvas()
@@ -18,7 +16,7 @@ var should_clear_food_interaction : bool = false
 
 func _draw() -> void:
 	
-	if show_interaction_lines : 
+	if Manager.show_interaction_lines : 
 		for pair in Manager.interaction_lines_food_base:
 			draw_line(pair[0], pair[1], Manager.interaction_color_from_food_base, 2)
 			should_clear_food_interaction = true
@@ -35,7 +33,7 @@ func _draw() -> void:
 			Manager.interaction_lines_food_base.clear()
 			should_clear_food_interaction = false
 	
-	if show_grid : 
+	if Manager.show_grid : 
 		for x in range(0, Manager.screen_size.x , Manager.grid_cell_size):
 			draw_line(Vector2(x, 0) , Vector2(x, Manager.screen_size.y), Color(1,1,0,0.1), 2, false)
 		

@@ -26,3 +26,18 @@ layout_mode = 2
 
 [node name="screamCalls" type="Label" parent="VBoxContainer"]
 layout_mode = 2
+
+[node name="showGrid" type="CheckBox" parent="VBoxContainer"]
+layout_mode = 2
+focus_mode = 0
+button_pressed = true
+text = "Show Grid"
+
+[node name="showInteractionLines" type="CheckBox" parent="VBoxContainer"]
+layout_mode = 2
+focus_mode = 0
+button_pressed = true
+text = "Show Interaction Lines"
+
+[connection signal="pressed" from="VBoxContainer/showGrid" to="." method="_on_show_grid_pressed"]
+[connection signal="pressed" from="VBoxContainer/showInteractionLines" to="." method="_on_show_interaction_lines_pressed"]
